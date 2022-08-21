@@ -17,6 +17,8 @@ const editForm = document.querySelector("#edit-form");
 const editInput = document.querySelector("#edit-input");
 const cancelEditBtn = document.querySelector("#cancel-edit-btn");
 
+let oldInputValue;
+
 
 // Funções
 const saveTodo = (text) => {
@@ -52,6 +54,23 @@ const saveTodo = (text) => {
 const toggleForms = () => {
     editForm.classList.toggle("hide"); //manda sumiar a lista de tarefas
     todoForm.classList.toggle("hide"); // manda sumar o formulário de add tarefas.
+}
+
+const updateTodo = (text) => {
+
+    const todos = document.querySelectorAll(".todo");
+
+    todos.forEach((todo) => {
+      
+        let todoTitle = todo.querySelector("h3");
+
+        console.log(todoTitle, text);
+
+        if(todoTitle.innerText === oldInputValue) {
+            todoTitle.innerText = text;
+        }
+        
+    })
 
 }
 
@@ -64,15 +83,18 @@ todoForm.addEventListener("submit", (e) => {
 
     if(inputValue) {
         saveTodo(inputValue);
-    } else {
-        window.alert("Informe a tarefa que deseja adicionar!");
     }
 });
 
 document.addEventListener("click", (e) => {
 
-    const targetEl = e.target
+    const targetEl = e.target;
     const parentEl = targetEl.closest("div"); //pegando o elemento div pai mais próximo.
+    let todoTitle;
+
+    if(parentEl && parentEl.querySelector("h3")){ // teste para saber se o botão clicado tem um elemento div pai e se esse parent tem um elemento h3.
+        todoTitle = parentEl.querySelector("h3").innerText;
+    }
 
     if(targetEl.classList.contains("finish-todo")) {
         parentEl.classList.toggle("done"); // toggle(o contrário de add). no casso ele tira a tag done.
@@ -83,7 +105,10 @@ document.addEventListener("click", (e) => {
     }
 
     if(targetEl.classList.contains("edit-todo")) {
-        toggleForms()
+        toggleForms();
+
+        editInput.value = todoTitle;
+        oldInputValue = todoTitle;
     }
 
     cancelEditBtn.addEventListener("click", (e) => {
@@ -93,4 +118,15 @@ document.addEventListener("click", (e) => {
     })
 });
 
-//feito por último o botão cancelar
+editForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const editInputValue = editInput.value;
+
+    if(editInputValue) {
+        updateTodo(editInputValue)
+    }
+
+    toggleForms();
+})
+
