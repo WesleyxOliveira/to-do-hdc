@@ -1,3 +1,14 @@
+/* 
+Pesquisar
+
+preventDefault()
+contains()
+toggle
+closest
+classList
+remove
+*/
+
 // Seleção de elementos
 const todoForm = document.querySelector("#todo-form");
 const todoInput = document.querySelector("#todo-input");
@@ -5,6 +16,7 @@ const todoList = document.querySelector("#todo-list");
 const editForm = document.querySelector("#edit-form");
 const editInput = document.querySelector("#edit-input");
 const cancelEditBtn = document.querySelector("#cancel-edit-btn");
+
 
 // Funções
 const saveTodo = (text) => {
@@ -37,6 +49,12 @@ const saveTodo = (text) => {
     todoInput.focus();
 }
 
+const toggleForms = () => {
+    editForm.classList.toggle("hide"); //manda sumiar a lista de tarefas
+    todoForm.classList.toggle("hide"); // manda sumar o formulário de add tarefas.
+
+}
+
 // Eventos
 todoForm.addEventListener("submit", (e) => {
     
@@ -49,4 +67,30 @@ todoForm.addEventListener("submit", (e) => {
     } else {
         window.alert("Informe a tarefa que deseja adicionar!");
     }
-})
+});
+
+document.addEventListener("click", (e) => {
+
+    const targetEl = e.target
+    const parentEl = targetEl.closest("div"); //pegando o elemento div pai mais próximo.
+
+    if(targetEl.classList.contains("finish-todo")) {
+        parentEl.classList.toggle("done"); // toggle(o contrário de add). no casso ele tira a tag done.
+    }
+
+    if(targetEl.classList.contains("remove-todo")) {
+        parentEl.remove();
+    }
+
+    if(targetEl.classList.contains("edit-todo")) {
+        toggleForms()
+    }
+
+    cancelEditBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+
+        toggleForms();
+    })
+});
+
+//feito por último o botão cancelar
